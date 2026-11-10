@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Gnani AI Meeting Dock",
+  "version": "1.1.0",
+  "description": "Floating AI meeting assistant for Zoom and web meetings: live/recorded transcription via Gnani Prisma v3.0 and meeting reports via Google Gemini.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabCapture",
+    "identity"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "http://localhost:11434/*",
+    "https://*.gnani.ai/*",
+    "https://*.vachana.ai/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content/dock.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/dock.css",
+        "pages/terms.html",
+        "pages/privacy.html",
+        "apis/gemini-llm.js",
+        "apis/gnani-stt.js",
+        "apis/index.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

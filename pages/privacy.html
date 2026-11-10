@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Zoom Meeting Dock</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #141417;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      padding: 48px 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .header {
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .last-updated {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .content-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 19px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.15);
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    p {
+      color: #d4d4d8;
+      font-size: 14.5px;
+      margin-bottom: 14px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      margin: 10px 0 14px 22px;
+      color: #d4d4d8;
+      font-size: 14.5px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: #ffffff;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: #6ee7b7;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <span class="badge">Privacy Protection</span>
+      <h1>Privacy Policy</h1>
+      <p class="last-updated">Last Updated: November 2026 · Version 1.0</p>
+    </header>
+
+    <main>
+      <section class="content-section">
+        <h2><span class="section-num">1</span> Overview & Privacy First Architecture</h2>
+        <p>Your privacy is central to <strong>Zoom Meeting Dock</strong>. We adhere to a local-first, minimal-data-footprint design philosophy. We do not sell your personal data, and we do not maintain tracking servers or ad-monitoring infrastructure.</p>
+      </section>
+
+      <section class="content-section">
+        <h2><span class="section-num">2</span> Audio Data & Ephemeral Processing</h2>
+        <p>When you record a meeting or speech note using Zoom Meeting Dock:</p>
+        <ul>
+          <li><strong>Audio-Only Capture (Zero Video):</strong> Audio is captured exclusively via <code>navigator.mediaDevices.getUserMedia</code> with <code>audio: true</code> and <code>video: false</code>. The extension never requests, accesses, or records video, webcam feeds, or screen shares.</li>
+          <li><strong>Zero Continuous Audio Storage:</strong> Audio chunks are converted into WAV PCM format strictly in volatile memory and dispatched in real-time to your configured Gnani.ai / Vachana.ai STT endpoint for transcription.</li>
+          <li><strong>Immediate Disposal:</strong> Once transcription completes, raw audio buffer memory is cleared and garbage collected.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2><span class="section-num">3</span> Local Credentials & Storage</h2>
+        <p>Your API Keys (e.g. Gnani STT API Key) and account credentials are saved exclusively within your browser's local sandbox (<code>localStorage</code> and Chrome Extension <code>chrome.storage.local</code>). They are never transmitted to any third-party intermediary servers.</p>
+      </section>
+
+      <section class="content-section">
+        <h2><span class="section-num">4</span> Authentication & Google Sign-In</h2>
+        <p>When you sign in using Google or email:</p>
+        <ul>
+          <li>We only access basic profile identity attributes (such as your verified email address and display name) necessary to label personal meeting action items and deliverables.</li>
+          <li>We do not request or store your Google account password.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <h2><span class="section-num">5</span> Transcripts & Extracted Action Items</h2>
+        <p>Meeting transcripts and extracted action items reside locally in your active browser session. If you close your browser or clear site data, your local memory state is reset unless exported by you.</p>
+      </section>
+
+      <section class="content-section">
+        <h2><span class="section-num">6</span> Your Control & Data Deletion</h2>
+        <p>You maintain complete control over your data. At any time, you can clear your API key, sign out, reset transcript history, or uninstall the extension to permanently erase all locally held session data.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Zoom Meeting Dock · AI Companion</p>
+      <div style="margin-top: 8px;">
+        <a href="terms.html">Terms of Service</a>
+        <span>·</span>
+        <a href="#" onclick="window.close(); return false;">Close This Tab</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

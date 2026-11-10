@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Tool Dock</title>
+  <link rel="stylesheet" href="content/dock.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #050507;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Clean Studio Canvas */
+    .canvas-dotgrid {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #09090b;
+    }
+
+    /* Top Studio Test Bar */
+    .test-toolbar {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 10px;
+      border-radius: 10px;
+      z-index: 5000;
+      color: #e4e4e7;
+      font-size: 12px;
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      color: #a1a1aa;
+      font-size: 11.5px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      margin-right: 2px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .test-btn {
+      background: #27272a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f4f4f5;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 500;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .test-btn:hover {
+      background: #3f3f46;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .test-btn.primary {
+      background: rgba(225, 29, 72, 0.14);
+      border-color: rgba(225, 29, 72, 0.4);
+      color: #fb7185;
+    }
+
+    .test-btn.primary:hover {
+      background: rgba(225, 29, 72, 0.22);
+      border-color: rgba(225, 29, 72, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <!-- Clean Studio Canvas -->
+  <div class="canvas-dotgrid"></div>
+
+  <!-- Top Studio Test Bar -->
+  <div class="test-toolbar">
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span>Gnani STT v3</span>
+    </div>
+    <button class="test-btn primary" id="btn-quick-record">Record Audio</button>
+    <button class="test-btn" id="btn-open-summary">AI Meeting Summary</button>
+    <button class="test-btn" id="btn-open-auth">Login & API Keys</button>
+    <button class="test-btn" id="btn-open-google">Google Sign-In</button>
+    <button class="test-btn" id="btn-toggle-minimize">Minimize Dock</button>
+  </div>
+
+  <!-- API Services & Injected Tool Dock -->
+  <script type="module">
+    import { GeminiLLMService, GnaniSTTService } from './apis/index.js';
+    window.GeminiLLMService = GeminiLLMService;
+    window.GnaniSTTService = GnaniSTTService;
+  </script>
+  <script src="content/dock.js"></script>
+
+  <script>
+    document.getElementById('btn-open-summary').onclick = () => {
+      window.__ZOOM_DOCK__?.selectTool('summary');
+    };
+
+    document.getElementById('btn-open-auth').onclick = () => {
+      window.__ZOOM_DOCK__?.openAuthModal();
+    };
+
+    document.getElementById('btn-open-google').onclick = () => {
+      const dock = window.__ZOOM_DOCK__;
+      if (!dock) return;
+      dock.state.authModalOpen = true;
+      dock.state.googleChooserOpen = true;
+      dock.render();
+    };
+
+    document.getElementById('btn-quick-record').onclick = () => {
+      const dock = window.__ZOOM_DOCK__;
+      if (!dock) return;
+      if (dock.state.isRecording) {
+        dock.stopRealtimeRecognition();
+        document.getElementById('btn-quick-record').textContent = 'Record Audio';
+        document.getElementById('btn-quick-record').classList.remove('primary');
+      } else {
+        dock.startRealtimeRecognition('audio');
+        document.getElementById('btn-quick-record').textContent = 'Stop Recording';
+        document.getElementById('btn-quick-record').classList.add('primary');
+      }
+    };
+
+    // Auto-open summary modal if URL hash or search contains #summary
+    if (new URLSearchParams(location.search).has('summary') || location.hash.includes('summary')) {
+      if (window.__ZOOM_DOCK__) {
+        window.__ZOOM_DOCK__.selectTool('summary');
+      }
+    }
+
+    // Auto-open transcript modal if URL hash or search contains #transcript
+    if (new URLSearchParams(location.search).has('transcript') || location.hash.includes('transcript')) {
+      if (window.__ZOOM_DOCK__) {
+        window.__ZOOM_DOCK__.state.scrollIndexModalOpen = true;
+        window.__ZOOM_DOCK__.render();
+      }
+    }
+
+    // Auto-open login/auth modal if URL hash or search contains #login or #auth
+    if (location.hash.includes('login') || location.hash.includes('auth') || new URLSearchParams(location.search).has('login')) {
+      if (window.__ZOOM_DOCK__) {
+        window.__ZOOM_DOCK__.openAuthModal();
+      }
+    }
+
+    // Auto-open Google Chooser modal if URL hash contains #google
+    if (location.hash.includes('google')) {
+      if (window.__ZOOM_DOCK__) {
+        window.__ZOOM_DOCK__.state.authModalOpen = true;
+        window.__ZOOM_DOCK__.state.googleChooserOpen = true;
+        window.__ZOOM_DOCK__.render();
+      }
+    }
+
+    // Toggle minimize button in studio test toolbar
+    document.getElementById('btn-toggle-minimize').onclick = () => {
+      const dock = window.__ZOOM_DOCK__;
+      if (!dock) return;
+      dock.state.dockMinimized = !dock.state.dockMinimized;
+      dock.render();
+      document.getElementById('btn-toggle-minimize').textContent = dock.state.dockMinimized ? 'Expand Dock' : 'Minimize Dock';
+    };
+
+    // Auto-minimize if URL hash contains #minimized
+    if (location.hash.includes('minimized')) {
+      if (window.__ZOOM_DOCK__) {
+        window.__ZOOM_DOCK__.state.dockMinimized = true;
+        window.__ZOOM_DOCK__.render();
+        document.getElementById('btn-toggle-minimize').textContent = 'Expand Dock';
+      }
+    }
+
+    // Auto-open thinking state if URL hash contains #thinking
+    if (location.hash.includes('thinking')) {
+      if (window.__ZOOM_DOCK__) {
+        const dock = window.__ZOOM_DOCK__;
+        dock.state.modalOpen = true;
+        dock.state.activeTool = 'summary';
+        dock.state.messages = [
+          { id: 'u1', role: 'user', text: 'Can you summarize the action items from our discussion?' },
+          { id: 'load-demo', role: 'assistant', isLoading: true, text: 'Thinking...' }
+        ];
+        dock.render();
+        dock.startAILoading();
+      }
+    }
+
+    // Auto-open long scrollable chat if URL hash contains #scroll
+    if (location.hash.includes('scroll')) {
+      if (window.__ZOOM_DOCK__) {
+        const dock = window.__ZOOM_DOCK__;
+        dock.state.modalOpen = true;
+        dock.state.activeTool = 'summary';
+        dock.state.messages = [
+          { id: 'u1', role: 'user', text: 'Summarize the meeting discussions and deliverables.' },
+          { id: 'a1', role: 'assistant', text: '### Executive Overview\nThe team aligned on project deliverables and implementation milestones.\n\n### Key Decisions\n• Finalize audio recording pipeline using Web Audio API.\n• Maintain high responsiveness with lightweight state management.\n\n### Action Items\n• Complete testing across all target browsers.\n• Verify API integrations and secure key storage.' },
+          { id: 'u2', role: 'user', text: 'What is the schedule for testing?' },
+          { id: 'a2', role: 'assistant', text: 'Testing will proceed today with automated checks followed by full end-to-end verification.' },
+          { id: 'u3', role: 'user', text: 'Can you draft a follow-up action plan?' },
+          { id: 'a3', role: 'assistant', text: 'Action plan created:\n1. Audit all dropdowns and modals.\n2. Standardize easing curves.\n3. Instrument latency telemetry.' }
+        ];
+        dock.render();
+      }
+    }
+  </script>
+</body>
+</html>
