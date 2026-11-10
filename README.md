@@ -66,6 +66,7 @@ zoom-meeting-dock/
 ├── preview.html
 └── README.md
 ```
+Demo Video - https://drive.google.com/file/d/11jXt2IYU4zn3qcXCmtqKOt_kIjTCurtP/view?usp=drive_link
 
 ## 🔐 Privacy & Security
 
